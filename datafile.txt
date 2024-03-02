@@ -1,3 +1,0 @@
-There's nothing to worry about.
-PHP is actually really simple.
-But at the same time, it can do lots of things!
