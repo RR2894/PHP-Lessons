@@ -11,7 +11,7 @@
         $username = $_POST["username"];
         $password = $_POST["password"];
 
-        if($username === 'student' && $password === 'bc-college') {
+        if($username === 'b' && $password === 'bc-college') {
             $_SESSION["username"] = $username;
 
             header("Location: memberpage.php");
