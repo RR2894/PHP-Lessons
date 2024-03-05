@@ -1,5 +1,10 @@
 <?php
+    session_start();
     // if the user is not logged in, send them back to login.php
+    if(!isset($_SESSION["username"])) {
+        header("location: login.php");
+        exit;
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,6 +17,9 @@
 
 <?php
     // Greet the user with their name, i.e. get the session variable and print "Welcome, (username)!"
+    if(isset($_SESSION["username"])) {
+        echo "<p>Welcome " . $_SESSION["username"] . "!<\p>";
+    }
 ?>
 
 <p><a href="login.php?logout">Log out</a></p>

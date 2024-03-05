@@ -1,4 +1,5 @@
 <?php
+    session_start();
     $error_msg = "";
 
     // this is a handy little trick to know if the form has been sent
@@ -9,10 +10,20 @@
         // else set $error_msg to "Wrong username or password."
         $username = $_POST["username"];
         $password = $_POST["password"];
+
+        if($username === 'student' && $password === 'bc-college') {
+            $_SESSION["username"] = $username;
+
+            header("Location: memberpage.php");
+            exit;
+        } else {
+            $error_msg = "Wrong username or password.";
+        }
     }
     // this comes from the member page link
     else if(isset($_GET["logout"])) {
         // destroy the session
+        session_destroy();
         // you can also show some kind of message on the page if you like (not here - this is outside the body)
     }
 ?>
