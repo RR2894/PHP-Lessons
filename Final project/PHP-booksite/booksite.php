@@ -32,11 +32,6 @@
                 // If the parameter is not set, display all books.
                 // Use the HTML template below and a loop (+ conditional if the genre was given) to go through the books in file  
 
-                if(isset($_GET["genre"])) {
-                    $genre = $_GET["genre"];
-                } else {
-                    $genre = null;
-                }
                 
                 // You also need to check the cookies to figure out if the book is favorite or not and display correct symbol.
                 // If the book is in the favorite list, add the class "fa-star" to the a tag with "bookmark" class.
@@ -46,28 +41,69 @@
                 // Read the file into array variable $books:
                 $json = file_get_contents("books.json");
                 $books = json_decode($json, true);
-
+                
                 if(isset($_COOKIE['favorites'])) {
                     $favorites = json_decode($_COOKIE["favorites"]);
                 } else {
                     $favorites = [];
                 }
-            ?>
-            <h2>Genre Name or "All Books"</h2>
+                
+                $genreSearch = array (
+                    'adventure' => 'Adventure',
+                    'classic' => 'Classic Literature',
+                    'coming-of-age' => 'Coming-of-age',
+                    'fantasy' => 'Fantasy',
+                    'historical' => 'Historical Fiction',
+                    'horror' => 'Horror',
+                    'mystery' => 'Mystery',
+                    'romance' => 'Romance',
+                    'scifi' => 'Science Fiction'
+                );
+                
+                if(isset($_GET["genre"])) {
+                    $genre = $_GET["genre"];
+                } else {
+                    $genre = null;
+                }
+                
+                function isFavorite($bookId, $favorites) {
+                    return in_array($bookId, $favorites);
+                }
+                ?>
 
-            <section class="book">
-                <a class="bookmark fa fa-star-o" href="setfavorite.php?id=1"></a>
-                <h3>To Kill a Mockingbird</h3>
-                <p class="publishing-info">
-                    <span class="author">Harper Lee</span>,
-                    <span class="year">1960</span>
-                </p>
-                <p class="description">
-                    Harper Lee's masterpiece explores racial injustice and moral growth through the eyes of a young girl in the American South.
-                </p>
-            </section>
+                <h2>
+                    <?php
+                    if (isset($genre)) {
+                        echo $genreSearch[$genre];
+                    } else {
+                        echo "All Books";
+                    }
+                    ?>
+                </h2>
 
-        </main>
-    </div>    
-</body>
-</html>
+                <?php foreach ($books as $book): ?>
+                    <?php
+                    // Check if the book belongs to the specified genre or if no genre is specified
+                    if ($genre === null || in_array($genre, $book['genres'])) {
+                        // Determine if the book is a favorite or not
+                        $isFavorite = isFavorite($book['id'], $favorites);
+                        // Determine the appropriate Font Awesome class based on the favorite status
+                        if ($isFavorite) {
+                            $starClass = 'fa-star';
+                        } else {
+                            $starClass = 'fa-star-o';
+                        }                    
+                        ?>
+                    <section class="book">
+                        <a class="bookmark fa <?php echo $starClass; ?>" href="setfavorite.php?id=<?php echo $book['id']; ?>"></a>
+                        <h3><?php echo $book['title']; ?></h3>
+                        <p class="publishing-info">
+                            <span class="author"><?php echo $book['author']; ?></span>,
+                            <span class="year"><?php echo $book['year']; ?></span>
+                        </p>
+                        <p class="description">
+                            <?php echo $book['description']; ?>
+                        </p>
+                    </section>
+                    <?php } ?>
+                <?php endforeach; ?>
