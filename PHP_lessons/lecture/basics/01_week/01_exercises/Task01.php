@@ -10,7 +10,7 @@ Use the ´var_dump()´ function to check the data type of each variable and prin
 */
 
 $age = 29;
-$name = "Adel";
+$name = "Bob";
 $isStudent = true;
 
 print "Age is: \"$age\"\n";

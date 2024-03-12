@@ -7,6 +7,7 @@
 // $favorites = explode(",", $_COOKIE["favorites"]);
 
 // If the cookie's not set or this id is not part of the cookie, add this id and send the cookie to the user.
+
 // If it's part of the cookie, remove it and send the new cookie to the user.
 // By far the easiest way to remove a specific item (not index) from array is to use array_diff function, e.g.
 // $favorites = array_diff($favorites, array($id));

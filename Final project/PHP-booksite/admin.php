@@ -1,11 +1,15 @@
 <?php
-    session_start();
-    
     // If the user is not logged in, redirect them back to login.php.
+
+    session_start();
+
     if(!isset($_SESSION["login"])) {
         header("Location: login.php");
-        exit;
+        die;
     }
+
+    $json = file_get_contents("books.json");
+    $books = json_decode($json, true);
 
 ?>
 <!DOCTYPE html>
@@ -33,21 +37,31 @@
             <h2>All Books</h2>
             <?php
                 // This is almost identical to booksite.php (minus the genres). Make sure to print the correct id to the delete form.
-            ?>
-            <section class="book">
-                <form class="deleteform" action="deletebook.php" method="post">
-                    <input type="hidden" name="bookid" value="1">
+                foreach ($books as $book) {
+                    $id = $book['id'];
+                    $title = $book["title"];
+                    $author = $book["author"];
+                    $publishing_year = $book["publishing_year"];
+                    $description = $book["description"]; ?>
+                    <section class="book">
+                    <form class="deleteform" action="deletebook.php" method="post">
+                    <input type="hidden" name="bookid" value="<?php print $id; ?>">
                     <input type="submit" name="deletebook" value="Delete">
-                </form>
-                <h3>To Kill a Mockingbird</h3>
-                <p class="publishing-info">
-                    <span class="author">Harper Lee</span>,
-                    <span class="year">1960</span>
-                </p>
-                <p class="description">
-                    Harper Lee's masterpiece explores racial injustice and moral growth through the eyes of a young girl in the American South.
-                </p>
-            </section>
+                    </form>
+            <h3><?php print $title; ?></h3>
+            <p class="publishing-info">
+                <span class="author"><?php print $author; ?></span>,
+                <span class="year"><?php print $publishing_year; ?></span>
+            </p>
+            <p class="description">
+                <?php print $description; ?>
+            </p>
+        </section>
+
+            <?php } 
+            
+            ?>
+            
         </main>
     </div>    
 </body>
