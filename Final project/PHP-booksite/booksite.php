@@ -28,105 +28,51 @@
         </nav>
         <main>
             <?php
-             // Read the file into array variable $books:
-             $json = file_get_contents("books.json");
-             $books = json_decode($json, true);
-
-             if (isset($_COOKIE['favorites'])) {
-                $favorites = explode(",", $_COOKIE["favorites"]);
-                } else {
-                    $favorites = [];
-                }
-
-             $genreLookup = [
-                'adventure' => 'Adventure',
-                'classic' => 'Classic Literature',
-                'coming-of-age' => 'Coming-of-age',
-                'fantasy' => 'Fantasy',
-                'historical' => 'Historical Fiction',
-                'horror' => 'Horror',
-                'mystery' => 'Mystery',
-                'romance' => 'Romance',
-                'scifi' => 'Science Fiction'
-            ];
-
+                
+                
+                //Reads file into array varibable $books
+                $books = json_decode(file_get_contents("books.json"), true);
+                
                 // Here you should display the books of the given genre (GET parameter "genre"). Check the links above for parameter values.
                 // If the parameter is not set, display all books.
-                 // Use the HTML template below and a loop (+ conditional if the genre was given) to go through the books in file 
-                if (isset($_GET['genre'])) { ?>
-                    <h2><?php print $genreLookup[$_GET['genre']] ?></h2>
-                    <?php
-                    foreach ($books as $book) {
-                        if ($book['genre'] === $genreLookup[$_GET['genre']]) {
-                        $id = $book['id'];
-                        $title = $book["title"];
-                        $author = $book["author"];
-                        $publishing_year = $book["publishing_year"];
-                        $description = $book["description"]; ?>
-                        <section class="book">
-                        <a class= 
-                        <?php
-                // You also need to check the cookies to figure out if the book is favorite or not and display correct symbol.
+                $genre = $_GET['genre'] ?? null;
                 
+                $genre_books = [];
+                foreach ($books as $book) {
+                    if ($genre === null || ($book['genre']) === ($genre)) {
+                        $genre_books[] = $book;
+                    }
+                }
+                
+                // Use the HTML template below and a loop (+ conditional if the genre was given) to go through the books in file  
+                // You also need to check the cookies to figure out if the book is favorite or not and display correct symbol.
                 // If the book is in the favorite list, add the class "fa-star" to the a tag with "bookmark" class.
                 // If not, add the class "fa-star-o". These are Font Awesome classes that add a filled star and a star outline respectively.
-                if (in_array($id, $favorites)) {
-                    ?>"bookmark fa fa-star"
-                    <?php
-                } else {
-                    ?>"bookmark fa fa-star-o"
-                    <?php
-                }
-                ?> href=<?php print "setfavorite.php?id=$id"; ?>></a>
-                        <h3><?php print $title; ?></h3>
-                        <p class="publishing-info">
-                        <span class="author"><?php print $author; ?></span>,
-                        <span class="year"><?php print $publishing_year; ?></span>
-                        </p>
-                        <p class="description">
-                        <?php print $description; ?>
-                        </p>
-                        </section>
-                                
-                <?php }}
- 
-                } else { ?>
-                    <h2>All Books</h2> <?php
-                    foreach ($books as $book) {
-                        $id = $book['id'];
-                        $title = $book["title"];
-                        $author = $book["author"];
-                        $publishing_year = $book["publishing_year"];
-                        $description = $book["description"]; ?>
-                        <section class="book">
-                <a class= 
-                <?php
-                // You also need to check the cookies to figure out if the book is favorite or not and display correct symbol.
-                
-                // If the book is in the favorite list, add the class "fa-star" to the a tag with "bookmark" class.
-                // If not, add the class "fa-star-o". These are Font Awesome classes that add a filled star and a star outline respectively.
-                if (in_array($id, $favorites)) {
-                    ?>"bookmark fa fa-star"
-                    <?php
-                } else {
-                    ?>"bookmark fa fa-star-o"
-                    <?php
-                }
                 // Also, make sure to set the id parameter for each book, so the setfavorite.php page gets the information which book to favorite/unfavorite.
-                ?> href=<?php print "setfavorite.php?id=$id"; ?>></a>
-                <h3><?php print $title; ?></h3>
+                
+
+                
+            ?>
+            <h2>Genre Name or "All Books"</h2>
+            <?php foreach($genre_books as $book): ?>
+                <?php
+                    $favorite_id = isset($_COOKIE['favorites']) ? explode(",", $_COOKIE['favorite_id']) : [];
+                    $favorite_icon = in_array($book['id'], $favorite_id) ? "fa-star" : "fa-star-o";
+                    
+                ?>  
+            <section class="book">
+                <a class="bookmark fa <?php echo $favorite_icon?>" href="setfavorite.php?id=<?php echo $book["id"]?>"></a>
+                <h3><?php echo $book["title"]?></h3>
                 <p class="publishing-info">
-                    <span class="author"><?php print $author; ?></span>,
-                    <span class="year"><?php print $publishing_year; ?></span>
+                    <span class="author"><?php print $book["author"]?></span>,
+                    <span class="year"><?php print $book["publishing_year"]?></span>
                 </p>
                 <p class="description">
-                    <?php print $description; ?>
+                <?php print $book["description"]?>
                 </p>
             </section>
+            <?php endforeach; ?>
 
-                <?php }} 
-                ?>
-            
         </main>
     </div>    
 </body>

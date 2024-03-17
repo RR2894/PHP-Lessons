@@ -24,7 +24,7 @@
             die();
             
         }   else {
-        $errorNotif = "Failed to login with username or password. Please try again";
+        $errorNotif = "Failed to login with username or password. Please try again (Hint: Username is Alpha. Password is Beta.";
     }
 }
 ?>

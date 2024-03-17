@@ -6,12 +6,15 @@
         header("Location: login.php");
         die;
     }
-
+    
     // Read the file into array variable $books:
     $json = file_get_contents("books.json");
     $books = json_decode($json, true);
-
+    
     // if the form has been sent, add the book to the data file
+    // In order to protect against cross-site scripting attacks (i.e. basic PHP security), remove HTML tags from all input.
+    // There's a function for that. E.g.
+    // $title = strip_tags($_POST["title"]);
     if (isset($_POST['year'])) {
         $id = strip_tags($_POST['bookid']);
         $title = strip_tags($_POST['title']);
@@ -30,9 +33,6 @@
 
         $books[] = $newBook;
     }
-    // In order to protect against cross-site scripting attacks (i.e. basic PHP security), remove HTML tags from all input.
-    // There's a function for that. E.g.
-    // $title = strip_tags($_POST["title"]);
 
 
 
