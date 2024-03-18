@@ -17,20 +17,17 @@
 // And no, that's not a typo. It is HTTP_REFERER.
 
 $book_id = isset($_GET['id']) ? $_GET['id'] : header("Location:" . $_SERVER["HTTP_REFERER"]);
-$favorite_id = isset($_COOKIE['favorites']) ? explode(",", $_COOKIE['favorite_id']) : [];
+$favorite_id = isset($_COOKIE['favorite_id']) ? explode(",", $_COOKIE['favorite_id']) : [];
 
-$favorite_index = in_array($book_id , $favorite_id);
-$favorite_id = ($favorite_index===true) ? array_diff($favorite_id,[$book_id]): array_merge($favorite_id,[$book_id]);
-
-
-
-
-
+$favorite_index = array_search($book_id, $favorite_id);
+if ($favorite_index !== false) {
+    unset($favorite_id[$favorite_index]);
+} else {
+    $favorite_id[] = $book_id;
+}
 
 $favorites_string = implode(",", $favorite_id);
 setcookie("favorite_id", $favorites_string, time()+86400*30);
 header("Location:" . $_SERVER["HTTP_REFERER"]);
 exit;
-
-
 ?>
